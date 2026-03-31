@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componentes UI Bootstrap - Presentación Interactiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CONFIGURACIÓN BASE Y RESET */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #FFC820; /* Fondo amarillo principal */
+            color: #121212;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow: hidden; /* Evita el scroll general */
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #1F1F1F;
+        }
+
+        /* 2. TIPOGRAFÍA DE ALTO CONTRASTE */
+        h1, h2, h3, h4 {
+            color: #121212;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        /* 3. ESTRUCTURA DE DIAPOSITIVAS */
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none; /* Oculta todas por defecto */
+            width: 100%;
+            height: 100%;
+            padding: 40px 5%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto; /* Permite scroll interno si el contenido es muy alto */
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .slide.active {
+            display: flex; /* Muestra solo la activa */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+        }
+
+        /* 4. CONTROLES DE NAVEGACIÓN */
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background-color: #121212;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 20px;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #FFC820;
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .control-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            color: #FFF;
+        }
+
+        .control-btn:disabled {
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 18px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* 5. ESTILOS ESPECÍFICOS DE CONTENIDO */
+        .hero-section {
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(50px, 8vw, 100px);
+            letter-spacing: -3px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-section h1 span {
+            color: #FFC820;
+            background-color: #121212;
+            padding: 0 20px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 600;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 5vw, 56px);
+            margin-bottom: 50px;
+            letter-spacing: -2px;
+            width: 100%;
+        }
+
+        .section-title span {
+            color: #FFC820;
+            background-color: #121212;
+            padding: 0 15px;
+            border-radius: 8px;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+            height: 100%;
+        }
+
+        .card-icon {
+            color: #FFC820;
+            background-color: #121212;
+            border-radius: 12px;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+
+        .custom-list { list-style: none; }
+        .custom-list li {
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .custom-list li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #121212;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            font-size: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-list li {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 30px 40px 30px 100px;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+
+        .feature-list i.feature-icon {
+            color: #121212;
+            background-color: #FFC820;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 28px;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .feature-list h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            text-transform: none;
+        }
+
+        .image-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #FFFFFF;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-card .img-container { height: 240px; }
+        .image-card .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-card .content { padding: 30px; }
+
+        .code-block {
+            background-color: #1A1A1A;
+            border-radius: 12px;
+            padding: 25px;
+            font-family: 'Roboto Mono', monospace;
+            color: #FFFFFF;
+            font-size: 16px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .code-keyword { color: #FFC820; }
+        .code-class { color: #A371FF; }
+        .code-string { color: #5EEAD4; }
+
+        .demo-btn {
+            background-color: #121212;
+            color: #FFC820;
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .demo-btn:hover { transform: scale(1.05); }
+
+        .demo-alert {
+            background-color: #FFFFFF;
+            color: #121212;
+            border-left: 8px solid #121212;
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .chart-wrapper {
+            background: #FFFFFF;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .doughnut-chart {
+            border-radius: 50%;
+            height: 300px;
+            width: 300px;
+            box-shadow: inset 0 0 0 8px rgba(0,0,0,0.05);
+            background: conic-gradient(#121212 0% 35%, #FFFFFF 35% 65%, #555555 65% 85%, #999999 85% 100%);
+            border: 4px solid #121212;
+        }
+
+        .legend {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .legend li {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .legend .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .chart-summary {
+            background-color: #121212;
+            color: #FFC820 !important;
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .qa-section { text-align: center; }
+        .qa-section h2 {
+            font-size: clamp(60px, 8vw, 120px);
+            margin-bottom: 20px;
+        }
+        .contact-badge {
+            background-color: #121212;
+            color: #FFC820;
+            font-size: 24px;
+            font-weight: 800;
+            padding: 20px 40px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .grid-2-col, .grid-3-col, .chart-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .controls {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px;
+            }
+            .control-btn span { display: none; } /* Oculta texto en botones en móvil */
+            .slide { padding: 80px 5%; justify-content: flex-start; } /* Evita que los controles tapen el contenido */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Principal de la Presentación -->
+    <div id="presentation-container">
+
+        <!-- Slide 1: Inicio -->
+        <div class="slide active hero-section">
+            <div class="container">
+                <h1>Componentes <span>UI Bootstrap</span></h1>
+                <p class="hero-subtitle">Construyendo interfaces web modernas, rápidas y responsivas</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide">
+            <div class="container">
+                <h2 class="section-title">Agenda de <span>Presentación</span></h2>
+                <ul class="feature-list">
+                    <li>
+                        <i class="fa-solid fa-bolt feature-icon"></i>
+                        <h3>1. Introducción a Bootstrap</h3>
+                        <p>Conceptos clave y filosofía "Mobile-First" del framework líder en la industria.</p>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-table-columns feature-icon"></i>
+                        <h3>2. El Sistema de Rejilla (Grid System)</h3>
+                        <p>Estructuración de layouts sin esfuerzo utilizando contenedores, filas y columnas flexibles.</p>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-layer-group feature-icon"></i>
+                        <h3>3. Componentes Interactivos Principales</h3>
+                        <p>Exploración visual de elementos esenciales: Botones, Tarjetas, Barras de Navegación y Modales.</p>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-keyboard feature-icon"></i>
+                        <h3>4. Formularios Modernos</h3>
+                        <p>Controles de entrada de datos, validación estructurada y estilos impecables.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Intro -->
+        <div class="slide">
+            <div class="container grid-2-col">
+                <div>
+                    <h2 class="section-title">¿Qué es <span>Bootstrap?</span></h2>
+                    <p>Bootstrap es el framework front-end más popular del mundo para diseñar sitios web responsivos y dirigidos a dispositivos móviles.</p>
+                    <p>Proporciona una amplia colección de fragmentos de código HTML, CSS y JavaScript reutilizables para construir rápidamente interfaces web modernas sin partir de cero.</p>
+                    <ul class="custom-list" style="margin-top: 30px;">
+                        <li>Filosofía Mobile-First estricta.</li>
+                        <li>Consistencia visual en todos los navegadores.</li>
+                        <li>Variables CSS y personalización con Sass.</li>
+                        <li>Amplia comunidad y documentación robusta.</li>
+                    </ul>
+                </div>
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Código abstracto">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Grid -->
+        <div class="slide">
+            <div class="container">
+                <h2 class="section-title">El <span>Sistema de Rejilla</span></h2>
+                <div class="grid-3-col">
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-box"></i></div>
+                        <h3>Contenedores (.container)</h3>
+                        <p>El bloque de construcción base. Centran horizontalmente el contenido del sitio web, definiendo el ancho máximo en distintos puntos de quiebre responsivos.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-bars"></i></div>
+                        <h3>Filas (.row)</h3>
+                        <p>Envoltorios esenciales para las columnas. Aseguran que estas se alineen correctamente y manejan márgenes negativos para un flujo perfecto en pantalla.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-columns"></i></div>
+                        <h3>Columnas (.col)</h3>
+                        <p>Definen el ancho del contenido. La rejilla se basa en 12 columnas por fila, permitiendo layouts ultra complejos mediante clases como <code>.col-md-6</code>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Componentes -->
+        <div class="slide">
+            <div class="container grid-2-col">
+                <div class="card">
+                    <h2 class="section-title" style="font-size: 36px; margin-bottom: 20px;">Botones <span>(.btn)</span></h2>
+                    <p>Diseñados para acciones rápidas con soporte para múltiples tamaños y estados. Alto contraste garantizado.</p>
+                    <div class="code-block">
+&lt;<span class="code-keyword">button</span> <span class="code-class">class</span>=<span class="code-string">"btn btn-dark"</span>&gt;<br>
+&nbsp;&nbsp;Acción Principal<br>
+&lt;/<span class="code-keyword">button</span>&gt;
+                    </div>
+                    <button class="demo-btn" style="margin-top: 20px;">Acción Principal</button>
+                </div>
+                <div class="card">
+                    <h2 class="section-title" style="font-size: 36px; margin-bottom: 20px;">Alertas <span>(.alert)</span></h2>
+                    <p>Proporcionan retroalimentación contextual clave para acciones del usuario con estilos definidos.</p>
+                    <div class="code-block">
+&lt;<span class="code-keyword">div</span> <span class="code-class">class</span>=<span class="code-string">"alert alert-light"</span>&gt;<br>
+&nbsp;&nbsp;Proceso exitoso.<br>
+&lt;/<span class="code-keyword">div</span>&gt;
+                    </div>
+                    <div class="demo-alert" style="margin-top: 20px;">
+                        <i class="fa-solid fa-check-circle" style="color: #121212; margin-right: 8px;"></i> Proceso exitoso completado.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Tarjetas -->
+        <div class="slide">
+            <div class="container">
+                <h2 class="section-title">Tarjetas <span>(Cards)</span></h2>
+                <div class="grid-3-col">
+                    <div class="image-card">
+                        <div class="img-container">
+                            <img src="https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&w=600&q=80" alt="Tarjeta genérica">
+                        </div>
+                        <div class="content">
+                            <h3>Contenido Flexible</h3>
+                            <p>Contenedores con opciones de estilos como encabezados, pies de página, y fondos.</p>
+                        </div>
+                    </div>
+                    <div class="image-card">
+                        <div class="img-container">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Perfil">
+                        </div>
+                        <div class="content">
+                            <h3>Perfiles de Usuario</h3>
+                            <p>Ideales para mostrar avatares y descripciones en un formato compacto.</p>
+                        </div>
+                    </div>
+                    <div class="image-card">
+                        <div class="img-container">
+                            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80" alt="E-commerce">
+                        </div>
+                        <div class="content">
+                            <h3>E-commerce</h3>
+                            <p>Perfectas para grillas de tiendas online con imagen y botón de compra.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Formularios -->
+        <div class="slide">
+            <div class="container grid-2-col">
+                <div>
+                    <h2 class="section-title">Formularios <span>Modernos</span></h2>
+                    <ul class="custom-list">
+                        <li><strong>Controles Consistentes:</strong> <code>.form-control</code> unifica el diseño en todos los navegadores.</li>
+                        <li><strong>Input Groups:</strong> Extienden controles añadiendo texto o botones laterales.</li>
+                        <li><strong>Validación Integrada:</strong> Estilos visuales robustos basados en HTML5.</li>
+                        <li><strong>Switches modernos:</strong> Casillas de verificación estilo interruptor.</li>
+                    </ul>
+                </div>
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80" alt="Modal UI">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Gráfico -->
+        <div class="slide">
+            <div class="container">
+                <h2 class="section-title" style="text-align: center;">Uso de <span>Componentes</span></h2>
+                <div class="chart-wrapper">
+                    <div class="doughnut-chart"></div>
+                    <ul class="legend">
+                        <li><div class="color-box" style="background-color: #121212;"></div>Grid y Layout (35%)</li>
+                        <li><div class="color-box" style="background-color: #FFFFFF; border: 2px solid #121212;"></div>Tarjetas y Botones (30%)</li>
+                        <li><div class="color-box" style="background-color: #555555;"></div>Formularios (20%)</li>
+                        <li><div class="color-box" style="background-color: #999999;"></div>Navegación y Modales (15%)</li>
+                    </ul>
+                    <p class="chart-summary">El Grid System es la base indispensable de la estructura. Componentes como tarjetas y botones forman el núcleo visual de las interacciones diarias.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Final -->
+        <div class="slide qa-section">
+            <div class="container">
+                <h2>¿Preguntas?</h2>
+                <p style="font-size: 28px; font-weight: 700;">Gracias por explorar esta presentación sobre Bootstrap.</p>
+                <div class="contact-badge">
+                    <i class="fa-brands fa-bootstrap"></i> getbootstrap.com
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Controles de Navegación Flotantes -->
+    <div class="controls">
+        <button id="prevBtn" class="control-btn" title="Anterior">
+            <i class="fa-solid fa-arrow-left"></i> <span>Anterior</span>
+        </button>
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">9</span>
+        </div>
+        <button id="nextBtn" class="control-btn" title="Siguiente">
+            <span>Siguiente</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Lógica de Presentación (JavaScript) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const currentIndicator = document.getElementById('current-slide');
+            const totalIndicator = document.getElementById('total-slides');
+            
+            let currentSlideIndex = 0;
+            totalIndicator.textContent = slides.length;
+
+            function updatePresentation() {
+                // Actualiza clases
+                slides.forEach((slide, index) => {
+                    if (index === currentSlideIndex) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+
+                // Actualiza contador y botones
+                currentIndicator.textContent = currentSlideIndex + 1;
+                prevBtn.disabled = currentSlideIndex === 0;
+                nextBtn.disabled = currentSlideIndex === slides.length - 1;
+            }
+
+            // Eventos de botones
+            prevBtn.addEventListener('click', () => {
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    updatePresentation();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlideIndex < slides.length - 1) {
+                    currentSlideIndex++;
+                    updatePresentation();
+                }
+            });
+
+            // Navegación con teclado (Flechas izquierda y derecha)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            });
+
+            // Inicializar estado
+            updatePresentation();
+        });
+    </script>
+
+</body>
+</html>
